@@ -20,8 +20,16 @@ def index(request):
     parametre = request.GET.get("search")
     q = unquote(parametre) if parametre else ''
     result = Product.objects.filter(Q(name__icontains=q) | Q(description__icontains=q))
+    products_with_images = []
+    for i in result:
+        images = i.images.filter(product=i)[:1]
+        products_with_images.append({
+            'product': i,
+            'images': images,
+        })
+    
     DATA = {
-        "product": result
+        "product": products_with_images
     }
     return render(request, 'index.html', DATA)
 
