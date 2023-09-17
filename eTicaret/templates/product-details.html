@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+    <!-- Product Details Area Start -->
+    <div class="single-product-area section-padding-100 clearfix">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mt-50">
+                            {% for i in category %}
+                                <li class="breadcrumb-item"><a href="{% url 'shop2' i.slug %}">{{i.name}}</a></li>
+                            {% endfor %}
+                            <li class="breadcrumb-item active" aria-current="page">{{product.name}}</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-lg-7">
+                    <div class="single_product_thumb">
+                        <div id="product_details_slider" class="carousel slide" data-ride="carousel">
+                            <ol class="carousel-indicators">
+                                {% for i in images %}
+                                    <li {% if forloop.counter0 == 0 %}class="active"{% endif %} data-target="#product_details_slider" data-slide-to="{{ forloop.counter0 }}" style="background-image: url({{i.image.url}});">
+                                    </li>
+                                {% endfor %}
+                            </ol>
+                            <div class="carousel-inner">
+                                {% for i in images %}
+                                    <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
+                                        <a class="gallery_img" href="{{i.image.url}}">
+                                            <img class="d-block w-100" src="{{i.image.url}}">
+                                        </a>
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-5">
+                    <div class="single_product_desc">
+                        <!-- Product Meta Data -->
+                        <div class="product-meta-data">
+                            <div class="line"></div>
+                            {% if product.discounted_price %}
+                                <p class="product-price" ><span style="text-decoration:line-through;">${{ product.price|floatformat:"2" }}</span> %{{ product.campaign.discount_rate|floatformat:"0"}} indirim! </p>
+                                <p class="product-price">${{ product.discounted_price|floatformat:"2" }}</p>
+                            {% else %}
+                                <p class="product-price">${{ product.price|floatformat:"2" }}</p>
+                            {% endif %}
+                            <h2>{{product.name}}</h2>
+                            <!-- Ratings & Review -->
+                            <div class="ratings-review mb-15 d-flex align-items-center justify-content-between">
+                                <div class="ratings">
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                </div>
+                                <div class="review">
+                                    <a href="#">Write A Review</a>
+                                </div>
+                            </div>
+                            <!-- Avaiable -->
+                            <p class="avaibility"><i class="fa fa-circle"></i>{% if product.stock != 0 %} In {% else %} Out {% endif %} Stock</p>
+                        </div>
+
+                        <div class="short_overview my-5">
+                            <p>{{product.description}}</p>
+                        </div>
+                        {% if product.campaign %}
+                            <div class="short_overview my-5">
+                                <b>Kampanya Bilgisi</b>
+                                <p>{{ product.campaign.name }} %{{ product.campaign.discount_rate|floatformat:"0" }}</p>
+                            </div>
+                        {% endif %}
+                        <!-- Add to Cart Form -->
+                        <form class="cart clearfix" id="add-to-cart-form" method="POST">
+                            {% csrf_token %}
+                            <div class="cart-btn d-flex mb-50">
+                                <p>Qty</p>
+                                <div class="quantity">
+                                    <span class="qty-minus" onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty ) &amp;&amp; qty &gt; 1 ) effect.value--;return false;"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
+                                    <input type="number" class="qty-text" id="qty" step="1" min="1" max="100" name="quantity" value="1">
+                                    <span class="qty-plus" onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"><i class="fa fa-caret-up" aria-hidden="true"></i></span>
+                                </div>
+                            </div>
+                            <button type="submit" data-product-id="{{ product.id }}" class="btn amado-btn add-to-cart-button">Add to cart</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Product Details Area End -->
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+Merhaba {{ user.username }},
+
+Hesabınızı etkinleştirmek için aşağıdaki bağlantıya tıklayın:
+
+http://{{ domain }}{% url 'email-verify' uidb64=uid token=token %}
+
+Eğer bu talebi siz yapmadıysanız, lütfen bu e-postayı dikkate almayın.
+
+İyi günler!

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="cart-table-area section-padding-100">
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-12 col-lg-8">
+                    <div class="cart-title mt-50">
+                        <h2>Shopping Cart</h2>
+                    </div>
+                    {% if item %}
+                    {% csrf_token %}
+                    <div class="cart-table clearfix">
+                            <table class="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in item %}
+                                    <tr>
+                                        <td class="cart_product_img">
+                                            <a href="{% url 'details' i.category i.slug %}"><img src="{{ i.image.url }}" alt="Product"></a>
+                                        </td>
+                                        <td class="cart_product_desc">
+                                            <a href="{% url 'details' i.category i.slug %}"> {{ i.name }}</a>
+                                        </td>
+                                        <td class="price">
+                                            <span>${{ i.price|floatformat:"2" }}</span>
+                                        </td>
+                                        <td class="qty">
+                                            <div class="qty-btn d-flex">
+                                                <div class="quantity">
+                                                    {{ i.quantity }}x
+                                                    <button class="sepet-urun-sil btn" style="margin-left:20px;" data-product-id="{{ i.id }}">Kaldır</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <div class="cart-summary">
+                        <h5>Cart Total</h5>
+                        <ul class="summary-table">
+                            <li><span>Ara Toplam:</span> <span>${{ total|floatformat:"2" }}</span></li>
+                            <li><span>Kargo Bedeli:</span> <span>{% if kargo == 0 %}Ücretsiz {% else %} ${{ kargo }} {% endif %}</span></li>
+                            <li><span>Toplam:</span> <span>${{ toplam|floatformat:"2" }}</span></li>
+                        </ul>
+                        <div class="cart-btn mt-100">
+                            <a href="cart.html" class="btn amado-btn w-100">Checkout</a>
+                        </div>
+                        
+                    </div>
+                    {% else %}
+                        <p>Sepetinizde Ürün bulunmuyor.</p>
+                    {% endif %}
+                </div>
+            </div>
+                
+            </div>
+        </div>
+        
+    </div>
+{% endblock %}

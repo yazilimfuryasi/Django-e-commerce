@@ -1,0 +1,33 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="products-catagories-area clearfix">
+        <div class="amado-pro-catagory clearfix">
+            <!-- Single Catagory -->
+            {% for i in product %}
+                <div class="single-products-catagory clearfix">
+                    <a href="{% url 'details' i.category.slug i.slug %}">
+                        <img src="{% static 'img/bg-img/1.jpg' %}" alt="">
+                        <!-- Hover Content -->
+                        <div class="hover-content">
+                            <div class="line"></div>
+                            {% if i.discounted_price %}
+                                <p class="product-price" ><span style="text-decoration:line-through;">${{i.price|floatformat:"2"}}</span> %{{ i.campaign.discount_rate|floatformat:"0"}} indirim! </p>
+                                <p class="product-price">${{ i.discounted_price|floatformat:"2" }}</p>
+                            {% else %}
+                                <p>From ${{i.price}}</p>
+                            {% endif %}
+                            <h4>{{i.name}}</h4>
+                            {% if i.campaign %}<h2>{{i.campaign.name}} Kampanyası</h2>{% endif %}
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

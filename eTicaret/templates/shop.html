@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div id="category-tree"></div>
+        <div class="shop_sidebar_area">
+
+            <!-- ##### Single Widget ##### -->
+            <div class="widget catagory mb-50">
+                <!-- Widget Title -->
+                <h6 class="widget-title mb-30">Kategoriler</h6>
+
+                <!--  Catagories  -->
+                <div class="catagories-menu">
+                    <ul>
+                        {% for i in tree.children %}
+                            <li {% if i.is_active %}class="active"{% endif %}><a href="{% url 'shop2' i.id %}">{{i.name}}</a></li>
+                            <ul>
+                                {% for child in i.children %}
+                                    <li><a {% if child.is_active %}class="active"{% endif %} href="{% url 'shop2' child.id %}">{{child.name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <hr>
+
+            <!-- ##### Single Widget ##### -->
+            <div class="widget price mb-50">
+                <!-- Widget Title -->
+                <h6 class="widget-title mb-30">Fiyat</h6>
+                <div class="widget-desc">
+                    <div class="slider-range">
+                        <div data-min="10" data-max="1000" data-unit="$" class="slider-range-price ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" data-value-min="10" data-value-max="1000" data-label-result="">
+                            <div class="ui-slider-range ui-widget-header ui-corner-all"></div>
+                            <span id="min-price" class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                            <span id="max-price" class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"></span>
+                        </div>
+                        <div class="range-price">$<span id="display-min-price">{{min_price}}</span> - $<span id="display-max-price">{{max_price}}</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="amado_product_area section-padding-100">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="product-topbar d-xl-flex align-items-end justify-content-between">
+                            <!-- Total Products -->
+                            <div class="total-products">
+                                <p>Showing 1-8 0f 25</p>
+                                <div class="view d-flex">
+                                    <a href="#"><i class="fa fa-th-large" aria-hidden="true"></i></a>
+                                    <a href="#"><i class="fa fa-bars" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                            <!-- Sorting -->
+                            <div class="product-sorting d-flex">
+                                <div class="sort-by-date d-flex align-items-center mr-15">
+                                    <p>Sort by</p>
+                                    <form method="GET">
+                                            <select name="select" id="sirala" style="display: none;">
+                                                <option data-value="Sıralı" class="option {% if sort == 'Sıralı'%}selected{% endif %}">Sıralı</option>
+                                                <option data-value="Artan" class="option {% if sort == 'Artan' %}selected{% endif %}">Artan</option>
+                                                <option data-value="Azalan" class="option {% if sort == 'Azalan' %}selected{% endif %}">Azalan</option>
+                                            </select>
+                                            <div class="nice-select" tabindex="0">
+                                                <span class="current">{{ sort }}</span>
+                                                <ul class="list">
+                                                    <li data-value="Sıralı" class="option {% if sort == 'Sıralı' or sort == None %}selected{% endif %}">Sıralı</li>
+                                                    <li data-value="Artan" class="option {% if sort == 'Artan' %}selected{% endif %}">Artan</li>
+                                                    <li data-value="Azalan" class="option {% if sort == 'Azalan' %}selected{% endif %}">Azalan</li>
+                                                </ul>
+                                            </div>
+                                    </form>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="add-to-cart-form" method="POST">
+                    {% csrf_token %}
+                <div class="row" id="product-list">
+                        {% for i in urunler %}
+                            <!-- Single Product Area -->
+                            <div class="col-12 col-sm-6 col-md-12 col-xl-6">
+                                
+                                <div class="single-product-wrapper">
+                                    <!-- Product Image -->
+                                    <div class="product-img">
+                                        <img src="{{i.images.0.image.url}}" alt="">
+                                        <!-- Hover Thumb -->
+                                        <img class="hover-img" src="{{i.images.1.image.url}}" alt="">
+                                    </div>
+
+                                    <!-- Product Description -->
+                                    <div class="product-description d-flex align-items-center justify-content-between">
+                                        <!-- Product Meta Data -->
+                                        <div class="product-meta-data">
+                                            <div class="line"></div>
+                                            {% if i.product.discounted_price %}
+                                                <p class="product-price" ><span style="text-decoration:line-through;">${{ i.product.price|floatformat:"2" }}</span> %{{ i.product.campaign.discount_rate|floatformat:"0"}} indirim! </p>
+                                                <p class="product-price">${{ i.product.discounted_price|floatformat:"2" }}</p>
+                                            {% else %}
+                                                <p class="product-price">${{ i.product.price|floatformat:"2" }}</p>
+                                            {% endif %}
+                                            <a href="{% url 'details' i.product.category.slug i.product.slug %}">
+                                                <h6>{{i.product.name}}</h6>
+                                            </a>
+                                        </div>
+                                        <!-- Ratings & Cart -->
+                                        <div class="ratings-cart text-right">
+                                            <div class="ratings">
+                                                <i class="fa fa-star" aria-hidden="true"></i>
+                                                <i class="fa fa-star" aria-hidden="true"></i>
+                                                <i class="fa fa-star" aria-hidden="true"></i>
+                                                <i class="fa fa-star" aria-hidden="true"></i>
+                                                <i class="fa fa-star" aria-hidden="true"></i>
+                                            </div>
+                                            <div class="cart">
+                                                <button class="btn add-to-cart-button" data-product-id="{{ i.product.id }}" type="submit" title="Add to Cart"><img src="{% static 'img/core-img/cart.png' %}" alt=""></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Pagination -->
+                        <nav aria-label="navigation">
+                            <ul class="pagination justify-content-end mt-50">
+                                {% for page_num in page_range %}
+                                    <li class="page-item {% if page_num == page_obj.number %}active{% endif %}">
+                                        <a class="page-link" href="?page={{ page_num }}&sirala={{sort}}">{{ page_num | stringformat:'02d' }}.</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="my-element" data-current-path="{% url 'shop2' current_path %}"></div>
+    <!-- ##### Main Content Wrapper End ##### -->
+
+{% endblock %}
